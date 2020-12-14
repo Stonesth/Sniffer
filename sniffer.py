@@ -28,17 +28,32 @@ from watchdog.events import FileSystemEventHandler, LoggingEventHandler
 
 
 # -7 for the name of this project Sniffer
-save_path = dirname(__file__)[ : -7]
-propertiesFolder_path = save_path + "Properties"
+# save_path = dirname(__file__)[ : -7]
+save_path = os.path.dirname(os.path.abspath("__file__"))[ : -7]
+propertiesFolder_path = save_path + "\\"+ "Properties"
 
 path_to_look = tools.readProperty(propertiesFolder_path, 'Sniffer', 'path_to_look=')
 
 class Event(FileSystemEventHandler):
     def on_created(self, event):
+        print("on created")
         what = 'directory' if event.is_directory else 'file'
         if what == 'file' :
             logging.info("One %s: this is the location : %s", what, event.src_path)
             am.launchProcess(event.src_path)
+    
+    def on_modified(self, event):
+        print("on modified")
+        what = 'directory' if event.is_directory else 'file'
+        if what == 'file' :
+            logging.info("One %s: this is the location : %s", what, event.src_path)
+            am.launchProcess(event.src_path)
+
+    def on_moved(self, event):
+        print("on moved")
+
+    def on_deleted(self, event):
+        print("on deleted")
         
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO,
